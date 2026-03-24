@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECOBIN — Compostagem do Futuro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d2b1a;
+  --mid: #1a4a2e;
+  --lush: #2d7a4f;
+  --bright: #4aad6f;
+  --glow: #6ddf96;
+  --lime: #b8f04a;
+  --cream: #f0ede4;
+  --white: #fafff6;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--cream); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 20px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(13,43,26,0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(109,223,150,0.1);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem;
+  color: var(--white); display: flex; align-items: center; gap: 10px;
+}
+.logo-box {
+  width: 34px; height: 34px; background: var(--lime); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  color: rgba(240,237,228,0.6); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--lime); }
+.nav-cta {
+  background: var(--lime) !important; color: var(--bg) !important;
+  padding: 10px 22px; border-radius: 100px; font-weight: 700 !important;
+}
+.nav-cta:hover { opacity: 0.9; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center; padding: 120px 60px 80px;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 60% at 75% 50%, rgba(45,122,79,0.22) 0%, transparent 65%),
+              radial-gradient(ellipse 50% 50% at 10% 80%, rgba(109,223,150,0.08) 0%, transparent 55%);
+}
+.hero-left { position: relative; z-index: 2; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(109,223,150,0.1); border: 1px solid rgba(109,223,150,0.2);
+  padding: 7px 16px; border-radius: 100px; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--glow);
+  margin-bottom: 28px;
+  animation: fadeUp 0.7s ease both 0.2s;
+}
+.tag-dot { width: 6px; height: 6px; background: var(--lime); border-radius: 50%; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero-title {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(3rem, 6vw, 6rem); line-height: 0.95;
+  letter-spacing: -0.04em; margin-bottom: 24px;
+  animation: fadeUp 0.8s ease both 0.35s;
+}
+.title-accent { color: var(--lime); display: block; }
+.hero-desc {
+  font-size: 1rem; line-height: 1.75; color: rgba(240,237,228,0.6);
+  max-width: 480px; margin-bottom: 40px; font-weight: 300;
+  animation: fadeUp 0.8s ease both 0.5s;
+}
+.hero-btns { display: flex; gap: 16px; align-items: center; animation: fadeUp 0.8s ease both 0.65s; }
+.btn-primary {
+  background: var(--lime); color: var(--bg); padding: 15px 32px; border-radius: 100px;
+  font-weight: 700; font-size: 0.92rem; text-decoration: none; display: inline-block;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(184,240,74,0.35); }
+.btn-link {
+  color: var(--cream); font-size: 0.92rem; font-weight: 500; text-decoration: none;
+  display: flex; align-items: center; gap: 8px; transition: gap 0.3s, color 0.3s;
+}
+.btn-link:hover { gap: 14px; color: var(--lime); }
+
+/* HERO RIGHT — device */
+.hero-right {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeUp 1s ease both 0.8s;
+}
+.device-wrap { position: relative; width: 380px; height: 380px; }
+.ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(109,223,150,0.15);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+}
+.ring-1 { width: 380px; height: 380px; animation: spin 22s linear infinite; }
+.ring-2 { width: 290px; height: 290px; animation: spin 16s linear infinite reverse; }
+@keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+.ring-dot {
+  position: absolute; width: 9px; height: 9px; background: var(--lime);
+  border-radius: 50%; box-shadow: 0 0 8px var(--lime);
+}
+.ring-1 .ring-dot:nth-child(1) { top: -4px; left: calc(50% - 4px); }
+.ring-1 .ring-dot:nth-child(2) { bottom: -4px; left: calc(25% - 4px); }
+.ring-1 .ring-dot:nth-child(3) { right: -4px; top: calc(50% - 4px); }
+
+.logo-circle {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 190px; height: 190px; border-radius: 50%; overflow: hidden;
+  box-shadow: 0 0 60px rgba(45,122,79,0.5), 0 0 120px rgba(45,122,79,0.2);
+  animation: glowPulse 4s ease-in-out infinite;
+}
+.logo-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@keyframes glowPulse {
+  0%,100% { box-shadow: 0 0 40px rgba(45,122,79,0.4), 0 0 80px rgba(45,122,79,0.15); }
+  50% { box-shadow: 0 0 80px rgba(109,223,150,0.6), 0 0 140px rgba(109,223,150,0.25); }
+}
+
+.stat-card {
+  position: absolute; background: rgba(13,43,26,0.92);
+  border: 1px solid rgba(109,223,150,0.2); border-radius: 14px;
+  padding: 12px 18px; backdrop-filter: blur(16px);
+}
+.stat-card:nth-child(1) { top: 20px; left: -20px; animation: floatY 5s ease-in-out infinite; }
+.stat-card:nth-child(2) { bottom: 40px; right: -30px; animation: floatY 5s ease-in-out infinite 2.5s; }
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.stat-num { font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; color:var(--lime); line-height:1; }
+.stat-lbl { font-size:0.7rem; color:rgba(240,237,228,0.5); margin-top:2px; letter-spacing:0.04em; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+/* SECTION BASE */
+section { position: relative; }
+.section-wrap { max-width: 1200px; margin: 0 auto; padding: 0 60px; }
+.section-tag { display:inline-flex; align-items:center; gap:10px; font-size:0.73rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--glow); margin-bottom:18px; }
+.section-tag::before { content:''; width:22px; height:1px; background:var(--glow); display:block; }
+.section-title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4vw,3.4rem); letter-spacing:-0.03em; line-height:1.05; }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(36px); transition:opacity 0.75s ease, transform 0.75s ease; }
+.reveal.on { opacity:1; transform:translateY(0); }
+
+/* HOW */
+.how { padding: 130px 0; background: linear-gradient(180deg, transparent, rgba(26,74,46,0.12) 50%, transparent); }
+.how-header { display:grid; grid-template-columns:1fr 1fr; gap:50px; margin-bottom:70px; align-items:end; }
+.how-desc { font-size:0.95rem; line-height:1.8; color:rgba(240,237,228,0.58); font-weight:300; }
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+.step {
+  background:rgba(26,74,46,0.18); border:1px solid rgba(109,223,150,0.1);
+  border-radius:22px; padding:36px 28px; position:relative; overflow:hidden;
+  transition:transform 0.35s, background 0.35s, border-color 0.35s;
+}
+.step:hover { transform:translateY(-7px); background:rgba(26,74,46,0.38); border-color:rgba(109,223,150,0.28); }
+.step::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(to right,var(--lime),transparent); opacity:0; transition:opacity 0.35s; }
+.step:hover::before { opacity:1; }
+.step-n { font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; color:var(--lime); opacity:.65; margin-bottom:20px; }
+.step-ico { font-size:2.2rem; display:block; margin-bottom:16px; }
+.step h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; margin-bottom:10px; }
+.step p { font-size:0.84rem; line-height:1.7; color:rgba(240,237,228,0.52); font-weight:300; }
+
+/* BENEFITS */
+.benefits { padding: 120px 0; }
+.benefits-layout { display:grid; grid-template-columns:1fr 1fr; gap:70px; margin-top:60px; align-items:center; }
+.donut-wrap { position:relative; width:280px; height:280px; margin:0 auto; }
+.donut-svg { animation:spin 28s linear infinite; }
+.center-stat { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; }
+.center-num { font-family:'Syne',sans-serif; font-weight:800; font-size:3rem; letter-spacing:-0.04em; color:var(--lime); line-height:1; }
+.center-lbl { font-size:0.75rem; color:rgba(240,237,228,0.5); margin-top:3px; }
+.benefits-list { display:flex; flex-direction:column; gap:20px; }
+.bitem {
+  display:flex; gap:18px; padding:24px;
+  background:rgba(26,74,46,0.14); border:1px solid rgba(109,223,150,0.08);
+  border-radius:18px; transition:background 0.3s, border-color 0.3s, transform 0.3s;
+}
+.bitem:hover { background:rgba(26,74,46,0.3); border-color:rgba(109,223,150,0.2); transform:translateX(5px); }
+.bicon { width:48px; height:48px; background:rgba(184,240,74,0.1); border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+.btext h4 { font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; margin-bottom:5px; }
+.btext p { font-size:0.83rem; color:rgba(240,237,228,0.52); line-height:1.6; font-weight:300; }
+
+/* ARDUINO */
+.arduino { padding: 130px 0; }
+.arduino-layout { display:grid; grid-template-columns:1fr 1fr; gap:70px; margin-top:60px; align-items:start; }
+.arduino-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.acard {
+  background:rgba(26,74,46,0.18); border:1px solid rgba(109,223,150,0.1);
+  border-radius:18px; padding:26px 22px;
+  transition:background 0.3s, border-color 0.3s, transform 0.3s;
+}
+.acard:hover { background:rgba(26,74,46,0.32); border-color:rgba(109,223,150,0.25); transform:translateY(-4px); }
+.acard-ico { font-size:1.7rem; display:block; margin-bottom:12px; }
+.acard h4 { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:var(--lime); margin-bottom:7px; }
+.acard p { font-size:0.8rem; color:rgba(240,237,228,0.52); line-height:1.6; font-weight:300; }
+.tags-row { display:flex; flex-wrap:wrap; gap:9px; margin-top:24px; }
+.chip { padding:7px 16px; border-radius:100px; font-size:0.78rem; font-weight:500; border:1px solid; }
+.chip-g { background:rgba(109,223,150,0.1); border-color:rgba(109,223,150,0.25); color:var(--glow); }
+.chip-l { background:rgba(184,240,74,0.1); border-color:rgba(184,240,74,0.28); color:var(--lime); }
+.comp-box {
+  background:rgba(13,43,26,0.75); border:1px solid rgba(109,223,150,0.12);
+  border-radius:22px; padding:32px;
+}
+.comp-title { font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:var(--lime); margin-bottom:22px; display:flex; align-items:center; gap:10px; }
+.comp-title::after { content:''; flex:1; height:1px; background:rgba(109,223,150,0.15); }
+.comp-row { display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid rgba(109,223,150,0.06); gap:10px; }
+.comp-row:last-of-type { border-bottom:none; }
+.comp-name { font-size:0.85rem; font-weight:500; color:var(--cream); }
+.comp-name strong { color:var(--glow); }
+.comp-spec { font-size:0.75rem; color:rgba(240,237,228,0.38); font-weight:300; text-align:right; }
+.eco-badge { margin-top:22px; background:linear-gradient(135deg,rgba(184,240,74,0.1),rgba(109,223,150,0.07)); border:1px solid rgba(184,240,74,0.22); border-radius:13px; padding:15px 18px; display:flex; align-items:center; gap:13px; }
+.eco-ico { font-size:1.7rem; }
+.eco-text strong { display:block; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:var(--lime); }
+.eco-text span { font-size:0.77rem; color:rgba(240,237,228,0.52); }
+
+/* IMPACT */
+.impact { padding:120px 0; background:rgba(26,74,46,0.08); }
+.impact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:55px; }
+.icard {
+  background:rgba(13,43,26,0.65); border:1px solid rgba(109,223,150,0.1);
+  padding:55px 45px; position:relative; overflow:hidden;
+  transition:background 0.35s;
+}
+.icard:hover { background:rgba(26,74,46,0.35); }
+.icard::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(to right,var(--lime),transparent); transform:scaleX(0); transform-origin:left; transition:transform 0.45s; }
+.icard:hover::after { transform:scaleX(1); }
+.inum { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(3rem,5vw,5rem); letter-spacing:-0.05em; color:var(--lime); line-height:1; margin-bottom:10px; }
+.ilabel { font-size:0.95rem; font-weight:500; margin-bottom:7px; }
+.isub { font-size:0.8rem; color:rgba(240,237,228,0.42); line-height:1.6; font-weight:300; }
+.ibg { position:absolute; bottom:-15px; right:-8px; font-family:'Syne',sans-serif; font-weight:800; font-size:7rem; color:rgba(109,223,150,0.03); line-height:1; user-select:none; }
+
+/* CTA */
+.cta-section { padding:150px 0; text-align:center; position:relative; overflow:hidden; }
+.cta-glow { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:700px; background:radial-gradient(circle,rgba(45,122,79,0.18),transparent 70%); pointer-events:none; }
+.cta-inner { position:relative; z-index:2; max-width:680px; margin:0 auto; }
+.cta-eye { display:inline-block; font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--glow); margin-bottom:22px; }
+.cta-title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.6rem,5vw,4.8rem); letter-spacing:-0.04em; line-height:0.97; margin-bottom:24px; }
+.cta-desc { font-size:0.97rem; line-height:1.75; color:rgba(240,237,228,0.58); margin-bottom:44px; font-weight:300; }
+.cta-btns { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; }
+.btn-outline { border:1px solid rgba(240,237,228,0.28); color:var(--cream); padding:15px 32px; border-radius:100px; font-weight:500; font-size:0.92rem; text-decoration:none; transition:border-color 0.3s, color 0.3s; }
+.btn-outline:hover { border-color:var(--lime); color:var(--lime); }
+
+/* FOOTER */
+footer { padding:50px 60px; border-top:1px solid rgba(109,223,150,0.08); display:flex; align-items:center; justify-content:space-between; }
+.footer-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.2rem; color:var(--white); }
+.footer-copy { font-size:0.8rem; color:rgba(240,237,228,0.32); }
+.footer-links { display:flex; gap:22px; }
+.footer-links a { font-size:0.8rem; color:rgba(240,237,228,0.42); text-decoration:none; transition:color 0.3s; }
+.footer-links a:hover { color:var(--lime); }
+
+/* CHAT */
+.chat-btn {
+  position: fixed; bottom: 32px; right: 32px; z-index: 999;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--lime); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 8px 32px rgba(184,240,74,0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.chat-btn:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(184,240,74,0.55); }
+
+.chat-modal {
+  display: none; position: fixed; bottom: 104px; right: 32px; z-index: 998;
+  width: 370px; height: 520px;
+  background: #0d2b1a; border: 1px solid rgba(109,223,150,0.2);
+  border-radius: 24px; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  flex-direction: column;
+  animation: chatIn 0.35s cubic-bezier(.4,0,.2,1) both;
+}
+.chat-modal.open { display: flex; }
+@keyframes chatIn { from{opacity:0;transform:translateY(20px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+.chat-header {
+  padding: 18px 20px; display: flex; align-items: center; gap: 12px;
+  background: rgba(26,74,46,0.5); border-bottom: 1px solid rgba(109,223,150,0.1);
+  flex-shrink: 0;
+}
+.chat-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--lime); display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.chat-header-info { flex: 1; }
+.chat-header-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:var(--white); }
+.chat-header-status { font-size:0.72rem; color:var(--glow); display:flex; align-items:center; gap:5px; }
+.status-dot { width:6px; height:6px; background:var(--glow); border-radius:50%; animation:blink 1.5s infinite; }
+.chat-close { background:none; border:none; color:rgba(240,237,228,0.45); font-size:1.3rem; cursor:pointer; transition:color 0.2s; }
+.chat-close:hover { color:var(--lime); }
+
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 18px 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  scrollbar-width: thin; scrollbar-color: rgba(109,223,150,0.2) transparent;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(109,223,150,0.2); border-radius: 4px; }
+
+.msg { display:flex; gap:8px; align-items:flex-end; max-width:88%; }
+.msg.bot { align-self:flex-start; }
+.msg.user { align-self:flex-end; flex-direction:row-reverse; }
+.msg-avatar { width:28px; height:28px; border-radius:50%; background:rgba(184,240,74,0.15); border:1px solid rgba(184,240,74,0.25); display:flex; align-items:center; justify-content:center; font-size:0.8rem; flex-shrink:0; }
+.msg-bubble {
+  padding: 10px 14px; border-radius: 16px; font-size:0.83rem; line-height:1.55;
+}
+.msg.bot .msg-bubble { background:rgba(26,74,46,0.5); border:1px solid rgba(109,223,150,0.12); color:var(--cream); border-bottom-left-radius:4px; }
+.msg.user .msg-bubble { background:var(--lime); color:var(--bg); font-weight:500; border-bottom-right-radius:4px; }
+
+.chat-typing { display:flex; gap:5px; align-items:center; padding:10px 14px; background:rgba(26,74,46,0.5); border:1px solid rgba(109,223,150,0.12); border-radius:16px; border-bottom-left-radius:4px; width:fit-content; }
+.chat-typing span { width:7px; height:7px; background:var(--glow); border-radius:50%; animation:typing 1.2s infinite; }
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typing { 0%,100%{opacity:0.3;transform:translateY(0)} 50%{opacity:1;transform:translateY(-4px)} }
+
+.chat-suggestions { padding: 0 16px 12px; display:flex; gap:7px; flex-wrap:wrap; flex-shrink:0; }
+.chip-suggestion {
+  background:rgba(26,74,46,0.3); border:1px solid rgba(109,223,150,0.18);
+  color:var(--glow); font-size:0.72rem; padding:6px 12px; border-radius:100px;
+  cursor:pointer; transition:background 0.2s, border-color 0.2s; white-space:nowrap;
+}
+.chip-suggestion:hover { background:rgba(26,74,46,0.55); border-color:rgba(109,223,150,0.4); }
+
+.chat-input-row {
+  padding: 12px 16px; border-top: 1px solid rgba(109,223,150,0.1);
+  display:flex; gap:10px; align-items:center; flex-shrink:0;
+  background: rgba(13,43,26,0.6);
+}
+.chat-input {
+  flex:1; background:rgba(26,74,46,0.3); border:1px solid rgba(109,223,150,0.15);
+  border-radius:100px; padding:10px 16px; color:var(--cream); font-size:0.85rem;
+  font-family:'DM Sans',sans-serif; outline:none; transition:border-color 0.2s;
+}
+.chat-input::placeholder { color:rgba(240,237,228,0.35); }
+.chat-input:focus { border-color:rgba(109,223,150,0.4); }
+.chat-send {
+  width:38px; height:38px; border-radius:50%; background:var(--lime);
+  border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:1rem; flex-shrink:0; transition:transform 0.2s, opacity 0.2s;
+}
+.chat-send:hover { transform:scale(1.08); }
+.chat-send:disabled { opacity:0.5; cursor:not-allowed; }
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav { padding:18px 24px; }
+  .nav-links { display:none; }
+  .hero { grid-template-columns:1fr; padding:100px 24px 60px; }
+  .hero-right { display:none; }
+  .section-wrap { padding:0 24px; }
+  .how-header { grid-template-columns:1fr; gap:20px; }
+  .steps { grid-template-columns:1fr 1fr; }
+  .benefits-layout { grid-template-columns:1fr; }
+  .arduino-layout { grid-template-columns:1fr; }
+  .arduino-grid { grid-template-columns:1fr; }
+  .impact-grid { grid-template-columns:1fr; }
+  .cta-section .section-wrap { padding:0 24px; }
+  footer { padding:36px 24px; flex-direction:column; gap:16px; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="logo-box">🌿</div>
+    ECOBIN
+  </div>
+  <ul class="nav-links">
+    <li><a href="#como-funciona">Como Funciona</a></li>
+    <li><a href="#beneficios">Benefícios</a></li>
+    <li><a href="#tecnologia">Tecnologia</a></li>
+    <li><a href="#impacto">Impacto</a></li>
+    <li><a href="#contato" class="nav-cta">Saiba Mais</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-left">
+    <div class="hero-tag"><div class="tag-dot"></div>Tecnologia Arduino · Compostagem Inteligente</div>
+    <h1 class="hero-title">
+      Adubo de<br>qualidade em<br><span class="title-accent">tempo recorde.</span>
+    </h1>
+    <p class="hero-desc">A ECOBIN é a composteira eletrônica que acelera o processo de compostagem, transformando resíduos orgânicos em adubo fértil de forma inteligente, rápida e sustentável.</p>
+    <div class="hero-btns">
+      <a href="#como-funciona" class="btn-primary">Descobrir agora</a>
+      <a href="#impacto" class="btn-link">Ver impacto →</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="device-wrap">
+      <div class="ring ring-1">
+        <div class="ring-dot"></div>
+        <div class="ring-dot"></div>
+        <div class="ring-dot"></div>
+      </div>
+      <div class="ring ring-2"></div>
+      <div class="logo-circle">
+        <img src="data:image/jpeg;base64,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" alt="ECOBIN Logo">
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">5×</div>
+        <div class="stat-lbl">Mais rápido</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">95%</div>
+        <div class="stat-lbl">Menos odor</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="como-funciona">
+  <div class="section-wrap">
+    <div class="how-header reveal">
+      <div>
+        <span class="section-tag">Processo</span>
+        <h2 class="section-title">Como a ECOBIN<br>funciona</h2>
+      </div>
+      <p class="how-desc">Um microcontrolador Arduino gerencia todo o processo automaticamente — controlando temperatura (55–65°C), aeração e umidade — para transformar resíduos orgânicos em adubo rico em 2 a 4 semanas, não meses.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-n">01</div>
+        <span class="step-ico">🗑️</span>
+        <h3>Adição</h3>
+        <p>Coloque resíduos orgânicos no compartimento — restos de alimentos, cascas, folhas e outros materiais compostáveis.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <span class="step-ico">🌡️</span>
+        <h3>Processamento</h3>
+        <p>O Arduino Uno R3 controla automaticamente a temperatura (55–65°C) e a aeração via cooler para acelerar a decomposição.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <span class="step-ico">📡</span>
+        <h3>Monitoramento</h3>
+        <p>O sensor DHT22 mede temperatura e umidade em tempo real, ajustando as condições automaticamente.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <span class="step-ico">🌱</span>
+        <h3>Finalização</h3>
+        <p>Em 2 a 4 semanas, o adubo orgânico está pronto — rico em nutrientes, ideal para hortas e jardins.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits" id="beneficios">
+  <div class="section-wrap">
+    <div class="reveal">
+      <span class="section-tag">Diferenciais</span>
+      <h2 class="section-title">Por que escolher<br>a ECOBIN</h2>
+    </div>
+    <div class="benefits-layout">
+      <div class="reveal">
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="280" height="280" viewBox="0 0 280 280">
+            <circle cx="140" cy="140" r="110" fill="none" stroke="rgba(109,223,150,0.06)" stroke-width="36"/>
+            <circle cx="140" cy="140" r="110" fill="none" stroke="url(#dg)" stroke-width="36"
+              stroke-dasharray="600 692" stroke-dashoffset="173" stroke-linecap="round"/>
+            <circle cx="140" cy="140" r="72" fill="none" stroke="rgba(184,240,74,0.07)" stroke-width="18"/>
+            <circle cx="140" cy="140" r="72" fill="none" stroke="rgba(184,240,74,0.22)" stroke-width="18"
+              stroke-dasharray="340 452" stroke-dashoffset="113" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4aad6f"/><stop offset="100%" stop-color="#b8f04a"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="center-stat">
+            <div class="center-num">5×</div>
+            <div class="center-lbl">mais veloz</div>
+          </div>
+        </div>
+      </div>
+      <div class="benefits-list reveal">
+        <div class="bitem">
+          <div class="bicon">⚡</div>
+          <div class="btext">
+            <h4>Compostagem Ultra-Rápida</h4>
+            <p>Reduza o tempo de compostagem de meses para apenas 2 a 4 semanas com controle inteligente de temperatura e aeração via Arduino.</p>
+          </div>
+        </div>
+        <div class="bitem">
+          <div class="bicon">🌬️</div>
+          <div class="btext">
+            <h4>Zero Odor Indesejado</h4>
+            <p>Sistema de filtragem e aeração elimina 95% dos odores, tornando a compostagem adequada até para ambientes internos.</p>
+          </div>
+        </div>
+        <div class="bitem">
+          <div class="bicon">📊</div>
+          <div class="btext">
+            <h4>Monitoramento em Tempo Real</h4>
+            <p>Sensor DHT22 acompanha temperatura e umidade, ajustando automaticamente para máxima eficiência no processo.</p>
+          </div>
+        </div>
+        <div class="bitem">
+          <div class="bicon">🌍</div>
+          <div class="btext">
+            <h4>Impacto Ambiental Real</h4>
+            <p>Reduza sua pegada de carbono e contribua para um futuro mais sustentável a cada ciclo de compostagem.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARDUINO -->
+<section class="arduino" id="tecnologia">
+  <div class="section-wrap">
+    <div class="reveal">
+      <span class="section-tag">Tecnologia</span>
+      <h2 class="section-title">Movida por<br>Arduino</h2>
+    </div>
+    <div class="arduino-layout">
+      <div>
+        <div class="arduino-grid reveal">
+          <div class="acard">
+            <span class="acard-ico">🖥️</span>
+            <h4>Controle Arduino</h4>
+            <p>Arduino Uno R3 gerencia todo o processo de compostagem automaticamente.</p>
+          </div>
+          <div class="acard">
+            <span class="acard-ico">🌡️</span>
+            <h4>Monitoramento</h4>
+            <p>Sensor DHT22 mede temperatura e umidade em tempo real, garantindo condições ideais.</p>
+          </div>
+          <div class="acard">
+            <span class="acard-ico">💧</span>
+            <h4>Controle de Umidade</h4>
+            <p>Sistema automático de irrigação e drenagem mantém a umidade perfeita.</p>
+          </div>
+          <div class="acard">
+            <span class="acard-ico">⚡</span>
+            <h4>Eficiência</h4>
+            <p>Processo 5× mais rápido que a compostagem tradicional com baixo consumo energético.</p>
+          </div>
+        </div>
+        <div class="tags-row reveal">
+          <span class="chip chip-g">♻️ Arduino Inteligente</span>
+          <span class="chip chip-g">⚙️ Controle Automático</span>
+          <span class="chip chip-l">💰 Economia R$ 200/mês</span>
+          <span class="chip chip-g">🔌 Plug & Play</span>
+        </div>
+      </div>
+      <div class="comp-box reveal">
+        <div class="comp-title">⚙️ Componentes Arduino</div>
+        <div class="comp-row"><span class="comp-name"><strong>Arduino Uno R3</strong></span><span class="comp-spec">SMD CH340</span></div>
+        <div class="comp-row"><span class="comp-name"><strong>Sensor DHT22</strong></span><span class="comp-spec">Temperatura / Umidade</span></div>
+        <div class="comp-row"><span class="comp-name"><strong>Display LCD 16×2</strong></span><span class="comp-spec">Azul + I2C</span></div>
+        <div class="comp-row"><span class="comp-name"><strong>Módulo Relé</strong></span><span class="comp-spec">1 Canal 5V</span></div>
+        <div class="comp-row"><span class="comp-name"><strong>Cooler</strong></span><span class="comp-spec">92×92×25mm · 12V</span></div>
+        <div class="comp-row"><span class="comp-name"><strong>Lâmpada Cerâmica</strong></span><span class="comp-spec">110V / 220V</span></div>
+        <div class="comp-row"><span class="comp-name"><strong>Jumpers</strong></span><span class="comp-spec">Macho/Fêmea · 120 unidades</span></div>
+        <div class="eco-badge">
+          <span class="eco-ico">💰</span>
+          <div class="eco-text">
+            <strong>Economia de R$ 200/mês</strong>
+            <span>Produção do próprio adubo orgânico e redução no descarte de resíduos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="impact" id="impacto">
+  <div class="section-wrap">
+    <div class="reveal">
+      <span class="section-tag">Números</span>
+      <h2 class="section-title">Nosso impacto<br>em dados</h2>
+    </div>
+    <div class="impact-grid">
+      <div class="icard reveal">
+        <div class="inum" data-target="5" data-suffix="×">0×</div>
+        <div class="ilabel">Mais Rápido</div>
+        <div class="isub">Comparado com compostagem tradicional ao ar livre, com controle automático Arduino.</div>
+        <div class="ibg">5</div>
+      </div>
+      <div class="icard reveal">
+        <div class="inum" data-target="95" data-suffix="%">0%</div>
+        <div class="ilabel">Menos Odor</div>
+        <div class="isub">Sistema de aeração e filtragem elimina praticamente todos os odores do processo.</div>
+        <div class="ibg">95</div>
+      </div>
+      <div class="icard reveal">
+        <div class="inum" data-target="70" data-suffix="%">0%</div>
+        <div class="ilabel">Menos Lixo Orgânico</div>
+        <div class="isub">Redução no descarte de resíduos orgânicos para aterros sanitários pelos usuários ECOBIN.</div>
+        <div class="ibg">70</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contato">
+  <div class="cta-glow"></div>
+  <div class="section-wrap">
+    <div class="cta-inner reveal">
+      <span class="cta-eye">🌱 Faça parte da mudança</span>
+      <h2 class="cta-title">Comece a compostar<br><span style="color:var(--lime)">hoje mesmo.</span></h2>
+      <p class="cta-desc">Junte-se ao movimento que está transformando resíduos orgânicos em riqueza para o solo. A ECOBIN é mais do que um produto — é um passo em direção a um mundo mais verde.</p>
+      <div class="cta-btns">
+        <a href="#" class="btn-primary" onclick="openChat(); return false;">Entrar em contato</a>
+        <a href="#como-funciona" class="btn-outline">Ver como funciona</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">🌿 ECOBIN</div>
+  <div class="footer-copy">© 2025 ECOBIN. Todos os direitos reservados.</div>
+  <div class="footer-links">
+    <a href="#">Privacidade</a>
+    <a href="#">Termos</a>
+    <a href="#">Contato</a>
+  </div>
+</footer>
+
+<!-- CHAT FLUTUANTE -->
+<button class="chat-btn" onclick="openChat()" title="Fale com a EcoBin">🌿</button>
+
+<div class="chat-modal" id="chatModal">
+  <div class="chat-header">
+    <div class="chat-avatar">🌿</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">Assistente EcoBin</div>
+      <div class="chat-header-status"><span class="status-dot"></span> Online agora</div>
+    </div>
+    <button class="chat-close" onclick="closeChat()">✕</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button class="chip-suggestion" onclick="sendSuggestion(this)">Como funciona?</button>
+    <button class="chip-suggestion" onclick="sendSuggestion(this)">Componentes Arduino</button>
+    <button class="chip-suggestion" onclick="sendSuggestion(this)">Suporte técnico</button>
+    <button class="chip-suggestion" onclick="sendSuggestion(this)">Quanto tempo leva?</button>
+  </div>
+
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" type="text" placeholder="Digite sua dúvida..." onkeydown="if(event.key==='Enter') sendMessage()" />
+    <button class="chat-send" id="chatSend" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('on'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => ro.observe(el));
+
+// Count up
+function countUp(el, target, suffix) {
+  let cur = 0;
+  const step = target / 55;
+  const tick = () => {
+    cur = Math.min(cur + step, target);
+    el.textContent = Math.floor(cur) + suffix;
+    if (cur < target) requestAnimationFrame(tick);
+  };
+  tick();
+}
+const no = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      countUp(el, +el.dataset.target, el.dataset.suffix);
+      no.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.inum').forEach(el => no.observe(el));
+
+// ── CHAT ──
+const respostas = [
+  {
+    palavras: ['oi','olá','ola','boa','bom','hello','oi!','olá!'],
+    resposta: 'Olá! 🌿 Que bom ter você aqui! Como posso te ajudar com a EcoBin hoje?'
+  },
+  {
+    palavras: ['como funciona','funciona','funcionamento','processo','como é','como é feita'],
+    resposta: 'A EcoBin funciona assim: você coloca os resíduos orgânicos dentro, e o Arduino Uno R3 assume o controle! 🌱 Ele regula a temperatura entre 55–65°C com a lâmpada cerâmica, controla a aeração com o cooler e o sensor DHT22 monitora tudo em tempo real. Em 2 a 4 semanas, seu adubo está pronto!'
+  },
+  {
+    palavras: ['tempo','semana','demora','quanto tempo','prazo','rápido'],
+    resposta: 'A EcoBin transforma resíduos em adubo em apenas 2 a 4 semanas! ⚡ Isso é 5× mais rápido que a compostagem tradicional ao ar livre, graças ao controle automático de temperatura e aeração pelo Arduino.'
+  },
+  {
+    palavras: ['componente','peça','material','arduino','sensor','dht','lcd','relé','rele','cooler','lâmpada','lampada','jumper'],
+    resposta: 'Os componentes da EcoBin são: 🔧<br><br>• Arduino Uno R3 SMD CH340<br>• Sensor DHT22 (temperatura/umidade)<br>• Display LCD 16×2 + I2C<br>• Módulo Relé 1 Canal 5V<br>• Cooler 92×92×25mm 12V<br>• Lâmpada Cerâmica 110V/220V<br>• Jumpers Macho/Fêmea (120 un.)'
+  },
+  {
+    palavras: ['odor','cheiro','mau cheiro','fedor','fede','cheira','smell'],
+    resposta: 'A EcoBin reduz 95% dos odores! 🌬️ O sistema de aeração com cooler e filtragem elimina praticamente todo o cheiro. Se ainda sentir odor, verifique se o cooler está funcionando e se a umidade está entre 50–60%.'
+  },
+  {
+    palavras: ['temperatura','calor','aquecimento','quente','fria','frio'],
+    resposta: 'A temperatura ideal de operação da EcoBin é entre 55 e 65°C. 🌡️ Essa faixa é controlada automaticamente pelo Arduino através da lâmpada cerâmica e do sensor DHT22. Se a temperatura não estiver subindo, verifique a lâmpada e o módulo relé.'
+  },
+  {
+    palavras: ['umidade','úmida','úmido','seco','seca','molhado'],
+    resposta: 'A umidade ideal para a compostagem é entre 50 e 60%. 💧 O sensor DHT22 monitora isso em tempo real. Se estiver muito seco, a decomposição fica lenta. Se estiver muito úmido, pode gerar mau cheiro.'
+  },
+  {
+    palavras: ['display','tela','lcd','não liga','não acende','apagado'],
+    resposta: 'Se o display LCD não estiver ligando: 🖥️<br><br>1. Verifique a conexão do módulo I2C<br>2. Confirme a alimentação do Arduino (5V)<br>3. Cheque os jumpers do display<br>4. Tente recarregar o código no Arduino<br><br>Se o problema persistir, fale com a gente pelo e-mail ecobin@suporte.com 🌿'
+  },
+  {
+    palavras: ['suporte','problema','erro','ajuda','não funciona','deu erro','quebrou','parou'],
+    resposta: 'Aqui estão as soluções mais comuns: 🔧<br><br>• Display não liga → checar I2C e alimentação<br>• Temperatura não sobe → verificar lâmpada e relé<br>• Odor excessivo → checar cooler e umidade<br>• Sensor DHT22 sem leitura → verificar jumpers<br><br>Se o problema continuar, manda um e-mail para ecobin@suporte.com 🌿'
+  },
+  {
+    palavras: ['adubo','composto','fertilizante','resultado','produto'],
+    resposta: 'O adubo produzido pela EcoBin é rico em nutrientes e ideal para hortas e jardins! 🌱 Em 2 a 4 semanas você tem um composto orgânico de alta qualidade, eliminando a necessidade de comprar fertilizantes. Isso gera uma economia de até R$ 200/mês!'
+  },
+  {
+    palavras: ['economia','dinheiro','custo','preço','preco','valor','r$','real'],
+    resposta: 'Com a EcoBin você pode economizar até R$ 200/mês! 💰 Isso vem da produção do seu próprio adubo orgânico e da redução no descarte de resíduos. Além de economizar, você contribui com o meio ambiente! 🌍'
+  },
+  {
+    palavras: ['instalar','instalação','instalacao','montar','montagem','configurar','ligar','setup'],
+    resposta: 'Para instalar a EcoBin: ⚙️<br><br>1. Monte os componentes conforme o circuito<br>2. Conecte o sensor DHT22 ao Arduino<br>3. Ligue o módulo relé à lâmpada e ao cooler<br>4. Conecte o display LCD via I2C<br>5. Faça o upload do código no Arduino<br>6. Ligue e pronto! O sistema assume o controle automaticamente 🌿'
+  },
+  {
+    palavras: ['sustentável','sustentabilidade','meio ambiente','ecológico','ecologico','verde','natureza','carbono'],
+    resposta: 'A EcoBin é 100% sustentável! 🌍 Ela reduz 70% do lixo orgânico descartado, diminui a emissão de gases em aterros sanitários e transforma resíduos em adubo de qualidade. Tecnologia e sustentabilidade andando juntas! ♻️'
+  },
+  {
+    palavras: ['projeto','quem fez','escola','curso','aluno','estudante','técnico','redes'],
+    resposta: 'A EcoBin é um projeto desenvolvido por estudantes do curso técnico de Redes de Computadores! 👨‍💻 O projeto une tecnologia, sustentabilidade e eletrônica para criar uma solução real de compostagem automatizada com Arduino. 🌿'
+  },
+  {
+    palavras: ['contato','email','e-mail','falar','mensagem','whatsapp'],
+    resposta: 'Você pode entrar em contato com a equipe EcoBin pelo e-mail: 📧<br><strong>ecobin@suporte.com</strong><br><br>Respondemos em até 24 horas! 🌿'
+  }
+];
+
+const respostaDefault = 'Hmm, não entendi muito bem sua pergunta. 🤔 Você pode perguntar sobre como a EcoBin funciona, os componentes, tempo de compostagem, suporte técnico ou sustentabilidade. Como posso te ajudar?';
+
+function getBotResponse(text) {
+  const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  for (const item of respostas) {
+    if (item.palavras.some(p => lower.includes(p.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))) {
+      return item.resposta;
+    }
+  }
+  return respostaDefault;
+}
+
+let chatOpened = false;
+
+function openChat() {
+  const modal = document.getElementById('chatModal');
+  modal.classList.add('open');
+  if (!chatOpened) {
+    chatOpened = true;
+    setTimeout(() => addBotMessage('Olá! 🌿 Sou o assistente da EcoBin. Como posso te ajudar hoje? Pode perguntar sobre como funciona, os componentes, instalação ou suporte técnico!'), 400);
+  }
+  setTimeout(() => document.getElementById('chatInput').focus(), 200);
+}
+
+function closeChat() {
+  document.getElementById('chatModal').classList.remove('open');
+}
+
+function addBotMessage(text) {
+  const msgs = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.className = 'msg bot';
+  el.innerHTML = `<div class="msg-avatar">🌿</div><div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMessage(text) {
+  const msgs = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.innerHTML = `<div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.className = 'msg bot'; el.id = 'typingIndicator';
+  el.innerHTML = `<div class="msg-avatar">🌿</div><div class="chat-typing"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function sendSuggestion(btn) {
+  const text = btn.textContent;
+  document.getElementById('chatSuggestions').style.display = 'none';
+  handleSend(text);
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  document.getElementById('chatSuggestions').style.display = 'none';
+  handleSend(text);
+}
+
+function handleSend(text) {
+  addUserMessage(text);
+  const sendBtn = document.getElementById('chatSend');
+  const input = document.getElementById('chatInput');
+  sendBtn.disabled = true; input.disabled = true;
+  showTyping();
+
+  setTimeout(() => {
+    removeTyping();
+    addBotMessage(getBotResponse(text));
+    sendBtn.disabled = false; input.disabled = false;
+    input.focus();
+  }, 900);
+}
+</script></body></html>

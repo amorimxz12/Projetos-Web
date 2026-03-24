@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoBin - Composteira Eletrônica Inteligente</title>
+  <meta name="description" content="Composteira eletrônica com Arduino e sensores avançados. Transforme resíduos orgânicos em adubo de qualidade. Sustentabilidade encontra tecnologia.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #141821;
+      --bg-card: #191d27;
+      --fg: #e8eaf0;
+      --fg-muted: #9ba3b5;
+      --primary: #22a854;
+      --primary-light: #2ed66e;
+      --accent: #22a854;
+      --purple: #6c5ce7;
+      --amber: #e67e22;
+      --red: #e74c3c;
+      --border: #2a2f3d;
+      --radius: 12px;
+      --shadow-card: 0 10px 30px -10px rgba(0,0,0,0.3);
+      --gradient-tech: linear-gradient(135deg, #22a854, #6c5ce7);
+      --gradient-eco: linear-gradient(135deg, #22a854, #2ed66e);
+      --gradient-pro: linear-gradient(135deg, #22a854, #6c5ce7);
+      --gradient-hero: linear-gradient(135deg, #141821 0%, #12151e 50%, #141821 100%);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed; top: 0; width: 100%; z-index: 50;
+      background: rgba(20,24,33,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 0;
+    }
+    .logo { display: flex; align-items: center; gap: 0.75rem; }
+    .logo-icon {
+      width: 36px; height: 36px; background: var(--gradient-tech);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: white; font-weight: 800;
+    }
+    .logo h1 { font-size: 1.25rem; font-weight: 700; }
+    nav { display: flex; gap: 1.5rem; align-items: center; }
+    nav a { color: var(--fg-muted); font-size: 0.9rem; transition: color 0.3s; }
+    nav a:hover { color: var(--primary); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.5rem; border-radius: var(--radius); font-weight: 600;
+      font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.3s;
+    }
+    .btn-primary { background: var(--gradient-pro); color: white; }
+    .btn-primary:hover { opacity: 0.9; transform: scale(1.05); }
+    .btn-outline {
+      background: transparent; color: var(--fg); border: 1px solid rgba(34,168,84,0.3);
+    }
+    .btn-outline:hover { background: var(--gradient-pro); color: white; border-color: transparent; }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; padding-top: 5rem;
+      background: var(--gradient-hero);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .hero h2 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; }
+    .hero h2 .gradient { background: var(--gradient-tech); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 1.15rem; color: var(--fg-muted); margin-bottom: 2rem; }
+    .hero-tags { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
+    .hero-tag { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; }
+    .hero-tag.green { color: var(--accent); }
+    .hero-tag.primary { color: var(--primary); }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .hero-image { position: relative; text-align: center; }
+    .hero-image img { border-radius: 1rem; box-shadow: var(--shadow-card); max-width: 450px; }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 5rem 0; }
+    .section-title { text-align: center; margin-bottom: 3rem; }
+    .section-title h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+    .section-title .gradient { background: var(--gradient-tech); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .section-title .gradient-eco { background: var(--gradient-eco); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .section-title .gradient-pro { background: var(--gradient-pro); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .section-title p { font-size: 1.1rem; color: var(--fg-muted); max-width: 600px; margin: 0 auto; }
+    .bg-alt { background: rgba(25,29,39,0.5); }
+
+    /* ===== CARDS GRID ===== */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .card {
+      background: rgba(25,29,39,0.6); backdrop-filter: blur(8px);
+      border: 1px solid rgba(42,47,61,0.5); border-radius: var(--radius);
+      padding: 1.5rem; transition: all 0.3s;
+    }
+    .card:hover { background: rgba(25,29,39,0.9); box-shadow: var(--shadow-card); }
+    .card-icon {
+      width: 64px; height: 64px; background: var(--gradient-tech);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem; font-size: 1.5rem; transition: transform 0.3s;
+    }
+    .card:hover .card-icon { transform: scale(1.1); }
+    .card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .card p { font-size: 0.9rem; color: var(--fg-muted); line-height: 1.6; }
+
+    /* ===== BENEFITS ===== */
+    .benefit-metric { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
+    .card-center { text-align: center; }
+    .card-center .card-icon { margin: 0 auto 1rem; }
+
+    /* ===== SPECS ===== */
+    .spec-category { margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); font-size: 1.1rem; }
+    .spec-item { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.75rem; }
+    .spec-item .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 0.5rem; flex-shrink: 0; }
+    .spec-label { font-size: 0.9rem; font-weight: 500; }
+    .spec-value { font-size: 0.8rem; color: var(--fg-muted); }
+    .specs-footer {
+      background: var(--gradient-hero); border-radius: 1rem; padding: 2rem;
+      border: 1px solid rgba(42,47,61,0.3); margin-top: 3rem;
+    }
+    .specs-footer .grid-3 { text-align: center; margin-bottom: 1.5rem; }
+    .specs-footer .big { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .specs-footer .sub { color: var(--fg-muted); font-size: 0.9rem; }
+    .specs-footer .accent-big { color: var(--accent); }
+    .specs-footer .amber-big { color: var(--amber); }
+
+    /* ===== HOW IT WORKS ===== */
+    .step-num { font-size: 0.75rem; font-weight: 700; color: var(--fg-muted); margin-bottom: 0.5rem; }
+
+    /* ===== TUTORIAL TABS ===== */
+    .tabs { margin-top: 2rem; }
+    .tab-list { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 0.6rem 1.25rem; border-radius: var(--radius); border: 1px solid var(--border);
+      background: transparent; color: var(--fg-muted); cursor: pointer; font-size: 0.9rem;
+      font-weight: 500; transition: all 0.3s;
+    }
+    .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .trouble-item {
+      padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 0.75rem;
+    }
+    .trouble-item h4 { font-weight: 600; margin-bottom: 0.25rem; }
+    .trouble-item p { font-size: 0.85rem; color: var(--fg-muted); }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .badge-red { background: rgba(231,76,60,0.15); color: var(--red); }
+    .badge-amber { background: rgba(230,126,34,0.15); color: var(--amber); }
+    .badge-muted { background: rgba(155,163,181,0.15); color: var(--fg-muted); }
+    .check-list { list-style: none; }
+    .check-list li { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .check-list li::before { content: "✓"; color: var(--accent); font-weight: 700; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      max-width: 650px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 2rem;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem; background: none; border: none;
+      color: var(--fg-muted); font-size: 1.5rem; cursor: pointer;
+    }
+    .modal h3 { font-size: 1.5rem; font-weight: 700; background: var(--gradient-pro); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+    .modal-sub { color: var(--fg-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .modal-item h4 { font-weight: 600; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
+    .modal-item p { font-size: 0.85rem; color: var(--fg-muted); }
+    .modal-box { background: rgba(25,29,39,0.5); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; }
+    .modal-box h4 { font-weight: 600; margin-bottom: 0.5rem; }
+    .modal-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .modal-badge { padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 500; border: 1px solid; }
+
+    /* ===== FOOTER ===== */
+    footer { background: rgba(25,29,39,0.3); border-top: 1px solid rgba(42,47,61,0.3); padding: 3rem 0 1.5rem; }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+    .footer-links h4 { font-weight: 700; margin-bottom: 1rem; }
+    .footer-links a { display: block; color: var(--fg-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(42,47,61,0.3); padding-top: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .footer-bottom span { font-size: 0.85rem; color: var(--fg-muted); }
+    .footer-bottom a { color: var(--fg-muted); font-size: 0.85rem; margin-left: 1.5rem; }
+    .footer-bottom a:hover { color: var(--primary); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero h2 { font-size: 2.5rem; }
+      .hero-tags { justify-content: center; }
+      .hero-btns { justify-content: center; }
+      .hero-image { order: -1; }
+      .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+      nav { display: none; }
+      .modal-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .specs-footer .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container header-inner">
+    <div class="logo">
+      <div class="logo-icon">♻</div>
+      <h1>EcoBin</h1>
+    </div>
+    <nav>
+      <a href="#features">Recursos</a>
+      <a href="#how-it-works">Como Funciona</a>
+      <a href="#benefits">Benefícios</a>
+      <a href="#specs">Especificações</a>
+      <a href="#tutorial">Tutorial</a>
+    </nav>
+    <a href="#tutorial" class="btn btn-primary">Começar Agora</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <h2><span class="gradient">EcoBin</span><br>Compostagem Inteligente</h2>
+        <p>Transforme seus resíduos orgânicos em adubo de alta qualidade com o EcoBin, a composteira com Arduino de última geração. Sustentabilidade encontra tecnologia.</p>
+        <div class="hero-tags">
+          <span class="hero-tag green">🌿 100% Sustentável</span>
+          <span class="hero-tag primary">⚡ Processo Automatizado</span>
+        </div>
+        <div class="hero-btns">
+          <a href="#tutorial" class="btn btn-primary">Começar Tutorial →</a>
+          <button class="btn btn-outline" onclick="document.getElementById('techModal').classList.add('open')">🔧 Descobrir Tecnologia</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div style="width: 300px; height: 300px; margin: 0 auto; background: var(--gradient-tech); border-radius: 50%; opacity: 0.15; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: blur(60px);"></div>
+        <div style="position: relative; width: 350px; height: 250px; margin: 0 auto; background: var(--gradient-eco); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🌱</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="bg-alt">
+  <div class="container">
+    <div class="section-title">
+      <h2>Inovação em Cada <span class="gradient">Componente</span></h2>
+      <p>Nossa composteira eletrônica combina hardware avançado com software inteligente para revolucionar a compostagem doméstica.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">🌡️</div>
+        <h3>Sensores de Temperatura</h3>
+        <p>Monitoramento automático da temperatura interna para compostagem otimizada</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <h3>Ciclos Automatizados</h3>
+        <p>Sistema de mistura e aeração automatizado com timers programáveis</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💧</div>
+        <h3>Controle de Umidade</h3>
+        <p>Sensores de umidade para manter condições ideais de compostagem</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>Sistema de Segurança</h3>
+        <p>Proteções automáticas contra superaquecimento e falhas operacionais</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔧</div>
+        <h3>Controle Eletrônico</h3>
+        <p>Microcontrolador Arduino para automação completa do processo</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>Display LCD</h3>
+        <p>Visualização em tempo real de temperatura, umidade e status do processo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="section-title">
+      <h2>Como a <span class="gradient-eco">Tecnologia</span> Funciona</h2>
+      <p>Um processo completamente automatizado que transforma resíduos em recursos através de sensores de precisão.</p>
+    </div>
+    <div class="grid-4">
+      <div class="card card-center">
+        <div class="card-icon" style="margin: 0 auto 1rem;">📥</div>
+        <h3>Adicione Resíduos</h3>
+        <p>Insira seus resíduos orgânicos no compartimento principal da composteira</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin: 0 auto 1rem;">⚙️</div>
+        <h3>Automação Arduino</h3>
+        <p>O Arduino controla temperatura, umidade e sistema de mistura automaticamente</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin: 0 auto 1rem;">📊</div>
+        <h3>Monitoramento LCD</h3>
+        <p>Visualize temperatura, umidade e tempo restante no display LCD em tempo real</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin: 0 auto 1rem;">📦</div>
+        <h3>Adubo Pronto</h3>
+        <p>LED indicador e buzzer alertam quando o composto orgânico estiver pronto</p>
+      </div>
+    </div>
+    <div class="specs-footer" style="margin-top: 3rem;">
+      <div style="text-align: center;">
+        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--fg);">Automação com Arduino</h3>
+        <p style="color: var(--fg-muted); max-width: 700px; margin: 0 auto;">Nossa composteira utiliza Arduino UNO, sensores de temperatura e umidade, e automação simples para garantir o processo de compostagem mais eficiente possível. Controle totalmente offline e autônomo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section id="benefits" class="bg-alt">
+  <div class="container">
+    <div class="section-title">
+      <h2>Benefícios <span class="gradient-eco">Comprovados</span></h2>
+      <p>Resultados reais que você pode medir e acompanhar com nossa composteira automatizada.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card card-center">
+        <div class="card-icon" style="margin:0 auto 1rem;">📉</div>
+        <div class="benefit-metric">95%</div>
+        <h3>Redução de Resíduos</h3>
+        <p>Diminua drasticamente o volume de lixo orgânico enviado para aterros</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin:0 auto 1rem;">🌿</div>
+        <div class="benefit-metric">0 CO₂</div>
+        <h3>Pegada de Carbono Zero</h3>
+        <p>Processo neutro em carbono que contribui para um planeta mais verde</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin:0 auto 1rem;">💰</div>
+        <div class="benefit-metric" style="color:var(--amber);">R$ 200/mês</div>
+        <h3>Economia Garantida</h3>
+        <p>Reduza custos com fertilizantes e taxas de coleta de lixo orgânico</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin:0 auto 1rem;">⏰</div>
+        <div class="benefit-metric">6x mais rápido</div>
+        <h3>Processo Rápido</h3>
+        <p>Compostagem completa em apenas 4-6 semanas vs 6 meses tradicional</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin:0 auto 1rem;">🎯</div>
+        <div class="benefit-metric" style="color:var(--purple);">99.9%</div>
+        <h3>Precisão Científica</h3>
+        <p>Controle exato de temperatura, pH e umidade para resultados ideais</p>
+      </div>
+      <div class="card card-center">
+        <div class="card-icon" style="margin:0 auto 1rem;">⚡</div>
+        <div class="benefit-metric" style="color:var(--red);">15W</div>
+        <h3>Baixo Consumo</h3>
+        <p>Tecnologia eficiente que consome menos energia que uma lâmpada LED</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECIFICATIONS -->
+<section id="specs">
+  <div class="container">
+    <div class="section-title">
+      <h2><span class="gradient-pro">Arduino</span> Profissional</h2>
+      <p>Componentes Arduino de qualidade para garantir performance, durabilidade e precisão em cada processo de compostagem automatizada.</p>
+    </div>
+    <div class="grid-4">
+      <div class="card">
+        <div class="spec-category">Hardware</div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Microcontrolador</div><div class="spec-value">Arduino Uno R3 (CH340)</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Display</div><div class="spec-value">LCD 16x2 Azul + I2C</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Controle</div><div class="spec-value">Módulo Relé 1 Canal 5V</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Ventilação</div><div class="spec-value">Cooler 92x92x25mm 12V</div></div></div>
+      </div>
+      <div class="card">
+        <div class="spec-category">Sensores</div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Temperatura e Umidade</div><div class="spec-value">Sensor DHT22 (±0.5°C)</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Aquecimento</div><div class="spec-value">Lâmpada Cerâmica 110V/220V</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Conexões</div><div class="spec-value">Jumpers Macho/Fêmea 40 vias</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Cabeamento</div><div class="spec-value">Jumpers 20cm (80 unidades)</div></div></div>
+      </div>
+      <div class="card">
+        <div class="spec-category">Físico</div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Dimensões</div><div class="spec-value">60cm × 40cm × 45cm</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Peso</div><div class="spec-value">12.5 kg</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Capacidade</div><div class="spec-value">50L (20kg resíduos)</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Material</div><div class="spec-value">Plástico ABS + Aço inox</div></div></div>
+      </div>
+      <div class="card">
+        <div class="spec-category">Energia</div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Consumo médio</div><div class="spec-value">25W (operação)</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Consumo máximo</div><div class="spec-value">150W (aquecimento)</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Alimentação</div><div class="spec-value">110V/220V AC 60Hz</div></div></div>
+        <div class="spec-item"><div class="dot"></div><div><div class="spec-label">Proteção</div><div class="spec-value">Relé automático 5V</div></div></div>
+      </div>
+    </div>
+    <div class="specs-footer">
+      <div class="grid-3">
+        <div><div class="big">Arduino</div><div class="sub">Tecnologia confiável</div></div>
+        <div><div class="big accent-big">2 anos</div><div class="sub">Garantia completa</div></div>
+        <div><div class="big amber-big">Plug & Play</div><div class="sub">Fácil instalação</div></div>
+      </div>
+      <hr style="border: none; border-top: 1px solid rgba(42,47,61,0.3); margin: 1.5rem 0;">
+      <div style="text-align: center;">
+        <h3 style="font-size: 1.25rem; color: var(--primary); margin-bottom: 0.75rem;">EcoBin - Composteira Inteligente</h3>
+        <p style="color: var(--fg-muted); max-width: 600px; margin: 0 auto; font-size: 0.9rem;">Sistema completo baseado em Arduino para compostagem automatizada, com monitoramento preciso de temperatura, umidade e controle automático de aquecimento e ventilação para resultados perfeitos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TUTORIAL -->
+<section id="tutorial" style="background: linear-gradient(to bottom, var(--bg), var(--bg-card));">
+  <div class="container">
+    <div class="section-title">
+      <span class="badge" style="border: 1px solid rgba(34,168,84,0.2); color: var(--primary); margin-bottom: 1rem; display: inline-block;">Tutorial Completo</span>
+      <h2>Como Usar o <span class="gradient">EcoBin</span></h2>
+      <p>Guia completo para começar sua compostagem inteligente hoje mesmo</p>
+    </div>
+    <div class="tabs">
+      <div class="tab-list">
+        <button class="tab-btn active" onclick="switchTab('quick')">Início Rápido</button>
+        <button class="tab-btn" onclick="switchTab('detailed')">Tutorial Detalhado</button>
+        <button class="tab-btn" onclick="switchTab('maintenance')">Manutenção</button>
+        <button class="tab-btn" onclick="switchTab('troubleshooting')">Problemas</button>
+      </div>
+
+      <div id="tab-quick" class="tab-content active">
+        <div class="grid-4">
+          <div class="card card-center">
+            <div class="card-icon" style="margin:0 auto 1rem;">🗑️</div>
+            <h3>1. Adicione Resíduos</h3>
+            <p>Coloque restos de comida orgânica na composteira</p>
+          </div>
+          <div class="card card-center">
+            <div class="card-icon" style="margin:0 auto 1rem;">⚙️</div>
+            <h3>2. Configure o Arduino</h3>
+            <p>Ajuste temperatura e umidade ideais</p>
+          </div>
+          <div class="card card-center">
+            <div class="card-icon" style="margin:0 auto 1rem;">🖥️</div>
+            <h3>3. Monitore o LCD</h3>
+            <p>Acompanhe o progresso em tempo real</p>
+          </div>
+          <div class="card card-center">
+            <div class="card-icon" style="margin:0 auto 1rem;">🌱</div>
+            <h3>4. Colete o Adubo</h3>
+            <p>Retire o composto pronto em 21 dias</p>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 1.5rem; background: rgba(34,168,84,0.05); border-color: rgba(34,168,84,0.2);">
+          <h3>⬇️ Download do Código Arduino</h3>
+          <p style="margin: 0.5rem 0 1rem; color: var(--fg-muted);">Baixe o código completo para programar seu Arduino e começar imediatamente.</p>
+          <button class="btn btn-primary">⬇️ Baixar Código (.ino)</button>
+        </div>
+      </div>
+
+      <div id="tab-detailed" class="tab-content">
+        <div class="grid-2">
+          <div class="card">
+            <h3>🔧 Hardware Necessário</h3>
+            <ul class="check-list">
+              <li>Arduino Uno R3</li>
+              <li>Display LCD 16x2</li>
+              <li>Sensor DHT22</li>
+              <li>Cooler 12V</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>⚡ Configuração do Arduino</h3>
+            <ul class="check-list">
+              <li>Conectar sensores nos pinos digitais</li>
+              <li>Configurar display LCD I2C</li>
+              <li>Calibrar sensores de temperatura</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 1.5rem;">
+          <h3>🌿 Operação Diária</h3>
+          <div style="margin-top: 1rem;">
+            <p><strong>1. Adicione Resíduos Orgânicos</strong><br><span style="color:var(--fg-muted); font-size:0.9rem;">Restos de frutas, verduras, cascas e borras de café. Evite carnes e laticínios.</span></p>
+            <p style="margin-top:0.75rem;"><strong>2. Monitore Temperatura e Umidade</strong><br><span style="color:var(--fg-muted); font-size:0.9rem;">Temperatura ideal: 55-65°C. Umidade: 50-60%. O LCD mostra os valores em tempo real.</span></p>
+            <p style="margin-top:0.75rem;"><strong>3. Aguarde o Processo</strong><br><span style="color:var(--fg-muted); font-size:0.9rem;">O Arduino controla automaticamente ventilação e temperatura por 21 dias.</span></p>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 1.5rem;">
+          <h3>🖥️ Monitoramento LCD</h3>
+          <div class="grid-3" style="margin-top: 1rem;">
+            <div style="text-align:center; padding:1rem; background:rgba(25,29,39,0.5); border-radius:var(--radius);">
+              <div style="font-size:2rem;">🌡️</div>
+              <h4>Temperatura</h4>
+              <p style="font-size:0.85rem; color:var(--fg-muted);">Monitoramento contínuo</p>
+            </div>
+            <div style="text-align:center; padding:1rem; background:rgba(25,29,39,0.5); border-radius:var(--radius);">
+              <div style="font-size:2rem;">💧</div>
+              <h4>Umidade</h4>
+              <p style="font-size:0.85rem; color:var(--fg-muted);">Controle automático</p>
+            </div>
+            <div style="text-align:center; padding:1rem; background:rgba(25,29,39,0.5); border-radius:var(--radius);">
+              <div style="font-size:2rem;">⏰</div>
+              <h4>Tempo</h4>
+              <p style="font-size:0.85rem; color:var(--fg-muted);">Contador regressivo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-maintenance" class="tab-content">
+        <div class="grid-2">
+          <div class="card">
+            <h3>⚙️ Manutenção Semanal</h3>
+            <ul class="check-list">
+              <li>Limpar sensores DHT22</li>
+              <li>Verificar conexões do Arduino</li>
+              <li>Testar funcionamento do cooler</li>
+              <li>Calibrar display LCD</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>🌿 Manutenção Mensal</h3>
+            <ul class="check-list">
+              <li>Limpeza completa do recipiente</li>
+              <li>Verificar integridade dos cabos</li>
+              <li>Atualizar firmware do Arduino</li>
+              <li>Testar sistema de ventilação</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-troubleshooting" class="tab-content">
+        <div class="card">
+          <h3>⚠️ Solução de Problemas</h3>
+          <p style="color:var(--fg-muted); margin-bottom:1rem; font-size:0.9rem;">Soluções para os problemas mais comuns</p>
+          <div class="trouble-item">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <div><h4>⚠️ Display LCD não funciona</h4><p>Verifique as conexões dos pinos e alimentação do Arduino</p></div>
+              <span class="badge badge-red">Crítico</span>
+            </div>
+          </div>
+          <div class="trouble-item">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <div><h4>⚠️ Temperatura muito alta</h4><p>Aumente a ventilação e reduza material rico em nitrogênio</p></div>
+              <span class="badge badge-amber">Médio</span>
+            </div>
+          </div>
+          <div class="trouble-item">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <div><h4>⚠️ Processo muito lento</h4><p>Verifique umidade e adicione material marrom (folhas secas)</p></div>
+              <span class="badge badge-muted">Baixo</span>
+            </div>
+          </div>
+          <div class="trouble-item">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <div><h4>⚠️ Mau odor</h4><p>Misture melhor os materiais e adicione material seco</p></div>
+              <span class="badge badge-amber">Médio</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom: 1rem;">
+          <div class="logo-icon">♻</div>
+          <div><h3 style="font-size:1.25rem;">EcoBin</h3><span style="font-size:0.75rem; color:var(--fg-muted);">Tech Innovation</span></div>
+        </div>
+        <p style="color: var(--fg-muted); font-size: 0.9rem; line-height: 1.6;">Revolucionando a compostagem através de tecnologia Arduino, automação e design sustentável.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Produto</h4>
+        <a href="#features">Recursos</a>
+        <a href="#how-it-works">Como Funciona</a>
+        <a href="#benefits">Benefícios</a>
+        <a href="#specs">Especificações</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 EcoBin Tech Innovation. Todos os direitos reservados.</span>
+      <div>
+        <a href="#">Privacidade</a>
+        <a href="#">Termos</a>
+        <a href="#">Suporte</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TECH MODAL -->
+<div id="techModal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('techModal').classList.remove('open')">&times;</button>
+    <h3>EcoBin - Tecnologia Arduino</h3>
+    <p class="modal-sub">Compostagem inteligente automatizada com controle Arduino</p>
+    <div class="modal-grid">
+      <div class="modal-item"><h4>🔧 Controle Arduino</h4><p>Microcontrolador Arduino gerencia todo o processo automaticamente</p></div>
+      <div class="modal-item"><h4>🌡️ Monitoramento</h4><p>Sensores de temperatura, umidade e pH em tempo real</p></div>
+      <div class="modal-item"><h4>💧 Controle de Umidade</h4><p>Sistema automático de irrigação e drenagem</p></div>
+      <div class="modal-item"><h4>⚡ Eficiência</h4><p>Processo 5x mais rápido que compostagem tradicional</p></div>
+    </div>
+    <div class="modal-box">
+      <h4>🌿 Como Funciona</h4>
+      <p style="font-size:0.9rem;">1. <strong>Adição:</strong> Coloque resíduos orgânicos no compartimento</p>
+      <p style="font-size:0.9rem;">2. <strong>Processamento:</strong> Arduino controla temperatura (55-65°C) e aeração</p>
+      <p style="font-size:0.9rem;">3. <strong>Monitoramento:</strong> Sensores ajustam condições automaticamente</p>
+      <p style="font-size:0.9rem;">4. <strong>Finalização:</strong> Adubo pronto em 2-4 semanas</p>
+    </div>
+    <div class="modal-badges">
+      <span class="modal-badge" style="color:var(--primary); border-color:rgba(34,168,84,0.3); background:rgba(34,168,84,0.1);">♻ Arduino Inteligente</span>
+      <span class="modal-badge" style="color:var(--accent); border-color:rgba(34,168,84,0.3); background:rgba(34,168,84,0.1);">Controle Automático</span>
+      <span class="modal-badge" style="color:var(--amber); border-color:rgba(230,126,34,0.3); background:rgba(230,126,34,0.1);">Economia R$ 200/mês</span>
+      <span class="modal-badge" style="color:var(--purple); border-color:rgba(108,92,231,0.3); background:rgba(108,92,231,0.1);">Plug & Play</span>
+    </div>
+    <div class="modal-box">
+      <h4 style="color:var(--primary);">Componentes Arduino</h4>
+      <p style="font-size:0.9rem;">• <strong>Arduino Uno R3</strong> (SMD CH340)</p>
+      <p style="font-size:0.9rem;">• <strong>Sensor DHT22</strong> (Temperatura/Umidade)</p>
+      <p style="font-size:0.9rem;">• <strong>Display LCD 16x2</strong> Azul + I2C</p>
+      <p style="font-size:0.9rem;">• <strong>Módulo Relé</strong> 1 Canal 5V</p>
+      <p style="font-size:0.9rem;">• <strong>Cooler</strong> 92x92x25mm 12V</p>
+      <p style="font-size:0.9rem;">• <strong>Lâmpada Cerâmica</strong> 110V/220V</p>
+      <p style="font-size:0.9rem;">• <strong>Jumpers</strong> Macho/Fêmea (120 unidades)</p>
+    </div>
+    <div class="modal-box">
+      <h4>Especificações Gerais</h4>
+      <div class="modal-grid" style="margin-top:0.5rem; margin-bottom:0;">
+        <div><p style="font-size:0.85rem;">• Capacidade: 2,5 - 6,5L</p><p style="font-size:0.85rem;">• Dimensões: 20-60cm</p><p style="font-size:0.85rem;">• Peso: 3,5 - 5kg</p></div>
+        <div><p style="font-size:0.85rem;">• Potência: 25-150W</p><p style="font-size:0.85rem;">• Voltagem: 110V/220V</p><p style="font-size:0.85rem;">• Material: ABS + Inox</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoBin - Composteira Eletrônica</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #cfd8dc;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: #00ffab;
+      color: #0f2027;
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 2.5em;
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ffab;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      background: #101820;
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav button {
+      background: transparent;
+      border: 2px solid #00ffab;
+      color: #00ffab;
+      padding: 10px 20px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.4s ease;
+    }
+
+    nav button:hover {
+      background: #00ffab;
+      color: #0f2027;
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #00ffab;
+    }
+
+    section {
+      max-width: 800px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 255, 171, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.7s ease;
+      display: none;
+    }
+
+    section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      animation: slideIn 1s ease-out;
+    }
+
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      color: #00ffab;
+      margin-bottom: 20px;
+      text-shadow: 0 0 5px #00ffab;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      background: rgba(0, 255, 171, 0.1);
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .timeline {
+      position: relative;
+      padding: 20px;
+      margin-top: 40px;
+      max-width: 800px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 255, 171, 0.2);
+      padding: 40px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      animation: fadeIn 1s ease-out forwards;
+    }
+
+    .timeline-item:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    .timeline-item:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+
+    .timeline-item:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    .timeline-item:nth-child(4) {
+      animation-delay: 0.8s;
+    }
+
+    
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .timeline-icon {
+      background-color: #00ffab;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      position: relative;
+      margin-right: 20px; 
+      box-shadow: 0 0 10px #00ffab;
+    }
+
+    .timeline-content {
+      font-size: 1.1em;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #101820;
+      color: #00ffab;
+      margin-top: 40px;
+      font-size: 1em;
+      text-shadow: 0 0 5px #00ffab;
+    }
+
+    .card {
+      background: rgba(0, 255, 171, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(0, 255, 171, 0.2);
+      font-weight: 500;
+      opacity: 0;
+      animation: fadeInCard 1s ease-out forwards;
+    }
+
+    .card:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    .card:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+
+    .card:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes fadeInCard {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+  </style>
+</head>
+<body>
+
+  <header>
+    EcoBin — Composteira Eletrônica
+  </header>
+
+  <nav>
+    <button onclick="showSection('oque')">O que é</button>
+    <button onclick="showSection('praqueserve')">Pra que serve</button>
+    <button onclick="showSection('funcionamento')">Como funciona</button>
+    <button onclick="showSection('timeline')">Linha do Tempo</button>
+    <button onclick="showSection('beneficios')">Benefícios</button>
+  </nav>
+
+  <section id="oque">
+    <h2>O que é</h2>
+    <p>A <strong>EcoBin</strong> é uma composteira eletrônica inteligente que transforma resíduos orgânicos em adubo natural. Com sensores modernos e controle automatizado de temperatura e umidade, ela torna o processo de compostagem eficiente, rápido e livre de odores.</p>
+  </section>
+
+  <section id="praqueserve">
+    <h2>Pra que serve</h2>
+    <ul>
+      <li>Reduz drasticamente o lixo orgânico enviado a aterros sanitários.</li>
+      <li>Produz adubo de alta qualidade para plantas, hortas e jardins.</li>
+      <li>Promove a sustentabilidade e práticas ecológicas no dia a dia.</li>
+      <li>Facilita a compostagem em residências e estabelecimentos comerciais.</li>
+    </ul>
+  </section>
+
+  <section id="funcionamento">
+    <h2>Como funciona</h2>
+    <p>A EcoBin utiliza sensores inteligentes para controlar temperatura e umidade, criando as condições ideais para a compostagem. O sistema automatiza o processo de mistura e acelera a decomposição dos resíduos, tornando o processo muito mais rápido e eficiente.</p>
+  </section>
+
+  <section id="timeline">
+    <h2>Linha do Tempo</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-icon"></div>
+        <div class="timeline-content">Resíduos orgânicos são inseridos na EcoBin.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"></div>
+        <div class="timeline-content">Sensores iniciam o processo de compostagem, ajustando temperatura e umidade.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"></div>
+        <div class="timeline-content">Compostagem acelerada, livre de odores, e sem necessidade de intervenção manual.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"></div>
+        <div class="timeline-content">Adubo pronto para uso em jardins e hortas.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="beneficios">
+    <h2>Benefícios</h2>
+    <div class="card">
+      <h3>Sustentabilidade</h3>
+      <p>Redução do lixo orgânico, promovendo a reutilização de resíduos e a preservação ambiental.</p>
+    </div>
+    <div class="card">
+      <h3>Sem Cheiro</h3>
+      <p>Com o controle ideal de temperatura e umidade, não há odores durante o processo de compostagem.</p>
+    </div>
+    <div class="card">
+      <h3>Tecnologia Inteligente</h3>
+      <p>Com sensores e controle automatizado, a EcoBin faz todo o trabalho sozinha, sem intervenção manual.</p>
+    </div>
+  </section>
+
+  <footer>
+    EcoBin 2025 — Projeto sustentável desenvolvido com tecnologia ⚡
+  </footer>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(section => {
+        section.classList.remove('active');
+      });
+      const target = document.getElementById(id);
+      setTimeout(() => {
+        target.classList.add('active');
+      }, 100);
+    }
+  </script>
+
+</body>
+</html>
